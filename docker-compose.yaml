@@ -1,0 +1,30 @@
+services:
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /frontend
+    ports:
+      - "3000:3000"
+    tty: true
+    working_dir: /frontend
+
+  backend:
+    container_name: backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /backend
+    tty: true
+    working_dir: /backend
