@@ -23,7 +23,6 @@ func notfoundHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", middleware(notfoundHandler))
 	mux.HandleFunc("/data", middleware(api.DataHandler))

@@ -1,7 +1,7 @@
 services:
   frontend:
     container_name: frontend
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile
       target: dev
@@ -26,5 +26,28 @@ services:
       - type: bind
         source: ./backend
         target: /backend
+      - type: volume
+        target: /data
+        source: data
     tty: true
     working_dir: /backend
+
+  database:
+    container_name: database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - type: bind
+        source: ./database
+        target: /database
+      - type: volume
+        target: /data
+        source: data
+    tty: true
+    working_dir: /database
+
+volumes:
+  data:
+    driver: local

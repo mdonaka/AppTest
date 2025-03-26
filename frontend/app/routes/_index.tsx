@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => {
 
 
 export async function get() {
-  const response = await fetch('http://localhost:8080');
+  const response = await fetch('http://localhost:8080/data');
   const data = await response.json();
   return data;
 }
@@ -30,5 +30,13 @@ export default function Index() {
     return <h1>Loading...</h1>;
   }
 
-  return <h1>{data.message}</h1>;
+  return (
+    <div>
+      {data.map((item) => (
+        <div key={item.id}>
+          <p>{item.name} {item.age}</p>
+        </div>
+      ))}
+    </div>
+  )
 }
