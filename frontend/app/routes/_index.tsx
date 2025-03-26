@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import type {MetaFunction} from "@remix-run/node";
+import Table from '../components/Table';
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,12 +32,6 @@ export default function Index() {
   }
 
   return (
-    <div>
-      {data.map((item) => (
-        <div key={item.id}>
-          <p>{item.name} {item.age}</p>
-        </div>
-      ))}
-    </div>
+    <Table data={data} />
   )
 }
