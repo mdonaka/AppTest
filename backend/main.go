@@ -1,14 +1,10 @@
 package main
 
 import (
-	"encoding/json"
+	"backend/api"
 	"fmt"
 	"net/http"
 )
-
-type Response struct {
-	Message string `json:"message"`
-}
 
 func middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -22,19 +18,15 @@ func middleware(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-
-	response := Response{Message: "Hello, World!"}
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+func notfoundHandler(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
 }
 
 func main() {
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", middleware(handler))
+	mux.HandleFunc("/", middleware(notfoundHandler))
+	mux.HandleFunc("/data", middleware(api.DataHandler))
 
 	port := ":8080"
 	fmt.Printf("Server started at %s\n", port)
