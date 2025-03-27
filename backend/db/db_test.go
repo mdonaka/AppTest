@@ -10,15 +10,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func setupTestDB(t *testing.T, data []dbpkg.User) *sql.DB {
+func setupTestDB(t *testing.T, data []dbpkg.Spices) *sql.DB {
 	db, err := sql.Open("sqlite3", ":memory:")
 	assert.Nil(t, err)
 
-	_, err = db.Exec("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)")
+	_, err = db.Exec("CREATE TABLE spices (id INTEGER PRIMARY KEY, name TEXT, flavor TEXT, family TEXT)")
 	assert.Nil(t, err)
 
 	for _, entry := range data {
-		_, err = db.Exec("INSERT INTO users (id, name, age) VALUES (?, ?, ?)", entry.Id, entry.Name, entry.Age)
+		_, err = db.Exec("INSERT INTO spices (id, name, flavor, family) VALUES (?, ?, ?, ?)", entry.Id, entry.Name, entry.Flavor, entry.Family)
 		assert.Nil(t, err)
 	}
 
@@ -29,15 +29,15 @@ func setupTestDB(t *testing.T, data []dbpkg.User) *sql.DB {
 func TestSelectUser_Success(t *testing.T) {
 	testcases := []struct {
 		name     string
-		setup    []dbpkg.User
-		expected []dbpkg.User
+		setup    []dbpkg.Spices
+		expected []dbpkg.Spices
 	}{
 		{
 			name: "select user",
-			setup: []dbpkg.User{
-				{1, "Alice", 20},
+			setup: []dbpkg.Spices{
+				{0, "クミン", "スパイシー", "セリ科"},
 			},
-			expected: []dbpkg.User{{1, "Alice", 20}},
+			expected: []dbpkg.Spices{{0, "クミン", "スパイシー", "セリ科"}},
 		},
 	}
 

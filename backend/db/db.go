@@ -6,10 +6,11 @@ import (
 	"log"
 )
 
-type User struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+type Spices struct {
+	Id     int    `json:"id"`
+	Name   string `json:"name"`
+	Flavor string `json:"flavor"`
+	Family string `json:"family"`
 }
 
 func Open() *sql.DB {
@@ -20,27 +21,27 @@ func Open() *sql.DB {
 	return db
 }
 
-func SelectAll(db *sql.DB) ([]User, error) {
-	rows, err := db.Query("SELECT * FROM users")
+func SelectAll(db *sql.DB) ([]Spices, error) {
+	rows, err := db.Query("SELECT * FROM spices")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var users []User
+	var spices []Spices
 	for rows.Next() {
-		var user User
+		var spice Spices
 
-		err := rows.Scan(&user.Id, &user.Name, &user.Age)
+		err := rows.Scan(&spice.Id, &spice.Name, &spice.Flavor, &spice.Family)
 		if err != nil {
 			return nil, err
 		}
 
-		users = append(users, user)
+		spices = append(spices, spice)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return users, nil
+	return spices, nil
 }
