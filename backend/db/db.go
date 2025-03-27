@@ -23,7 +23,7 @@ func Open() *sql.DB {
 func SelectAll(db *sql.DB) ([]User, error) {
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -33,14 +33,14 @@ func SelectAll(db *sql.DB) ([]User, error) {
 
 		err := rows.Scan(&user.Id, &user.Name, &user.Age)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 
 		users = append(users, user)
 	}
 
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	return users, nil
 }
