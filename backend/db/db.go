@@ -7,18 +7,20 @@ import (
 )
 
 type User struct {
-	ID   int    `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 	Age  int    `json:"age"`
 }
 
-func Select_all() []User {
+func Open() *sql.DB {
 	db, err := sql.Open("sqlite3", "/data/spices.db")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	return db
+}
 
+func SelectAll(db *sql.DB) ([]User, error) {
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +31,7 @@ func Select_all() []User {
 	for rows.Next() {
 		var user User
 
-		err := rows.Scan(&user.ID, &user.Name, &user.Age)
+		err := rows.Scan(&user.Id, &user.Name, &user.Age)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,5 +42,5 @@ func Select_all() []User {
 	if err = rows.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return users
+	return users, nil
 }
