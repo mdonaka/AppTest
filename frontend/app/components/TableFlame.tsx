@@ -1,7 +1,7 @@
 import React from "react";
 import {useTable} from "react-table";
 
-const Table = ({data}) => {
+const TableFlame = ({data}) => {
 
   const columns = React.useMemo(
     () => [
@@ -43,4 +43,4 @@ const Table = ({data}) => {
   )
 };
 
-export default Table;
+export default TableFlame;

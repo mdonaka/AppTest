@@ -1,6 +1,5 @@
-import {useState, useEffect} from 'react';
 import type {MetaFunction} from "@remix-run/node";
-import Table from '../components/Table';
+import {Link} from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,28 +9,10 @@ export const meta: MetaFunction = () => {
 };
 
 
-export async function get() {
-  const response = await fetch('http://localhost:8080/data');
-  const data = await response.json();
-  return data;
-}
-
 export default function Index() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedData = await get();
-      setData(fetchedData);
-    }
-    fetchData();
-  }, []);
-
-  if (data === null) {
-    return <h1>Loading...</h1>;
-  }
-
   return (
-    <Table data={data} />
+    <div>
+      <Link to="/list">Go to About</Link>
+    </div>
   )
 }
