@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/api"
+	"backend/db"
 	"fmt"
 	"net/http"
 )
@@ -23,9 +24,13 @@ func notfoundHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	database := db.NewSqliteDB("/data/spices.db")
+	defer database.Close()
+	dataHandlerStruct := &api.DataHandlerStruct{DB: database}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", middleware(notfoundHandler))
-	mux.HandleFunc("/data", middleware(api.DataHandler))
+	mux.HandleFunc("/data", middleware(dataHandlerStruct.DataHandler))
 
 	port := ":8080"
 	fmt.Printf("Server started at %s\n", port)

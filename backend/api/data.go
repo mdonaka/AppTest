@@ -1,15 +1,17 @@
 package api
 
 import (
-	dbpkg "backend/db"
+	"backend/db"
 	"encoding/json"
 	"net/http"
 )
 
-func DataHandler(w http.ResponseWriter, r *http.Request) {
-	mydb := dbpkg.Open()
-	defer mydb.Close()
-	response, err := dbpkg.SelectAll(mydb)
+type DataHandlerStruct struct {
+	DB db.DB
+}
+
+func (handler *DataHandlerStruct) DataHandler(w http.ResponseWriter, r *http.Request) {
+	response, err := handler.DB.SelectAll()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

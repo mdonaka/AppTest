@@ -1,55 +1,72 @@
 package db_test
 
 import (
+	"backend/db"
 	"database/sql"
-	"github.com/stretchr/testify/assert"
 	"testing"
 
-	dbpkg "backend/db"
-
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/stretchr/testify/assert"
 )
 
-func setupTestDB(t *testing.T, data []dbpkg.Spices) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	assert.Nil(t, err)
-
-	_, err = db.Exec("CREATE TABLE spices (id INTEGER PRIMARY KEY, name TEXT, flavor TEXT, family TEXT)")
-	assert.Nil(t, err)
-
-	for _, entry := range data {
-		_, err = db.Exec("INSERT INTO spices (id, name, flavor, family) VALUES (?, ?, ?, ?)", entry.Id, entry.Name, entry.Flavor, entry.Family)
-		assert.Nil(t, err)
+func setupTestDB(t *testing.T, initialData []db.Spices) db.DB {
+	t.Helper()
+	conn, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		t.Fatalf("Failed to open in-memory database: %v", err)
 	}
 
-	return db
+	createTable := `
+	CREATE TABLE spices (
+		id INTEGER PRIMARY KEY,
+		name TEXT,
+		flavor TEXT,
+		family TEXT
+	);
+	`
+	if _, err := conn.Exec(createTable); err != nil {
+		t.Fatalf("Failed to create table: %v", err)
+	}
+
+	insertStmt := `INSERT INTO spices (id, name, flavor, family) VALUES (?, ?, ?, ?);`
+	for _, spice := range initialData {
+		if _, err := conn.Exec(insertStmt, spice.Id, spice.Name, spice.Flavor, spice.Family); err != nil {
+			t.Fatalf("Failed to insert initial data: %v", err)
+		}
+	}
+
+	return &db.SqliteDB{Conn: conn}
 }
 
-// SelectAllが成功するかのテスト
-func TestSelectUser_Success(t *testing.T) {
-	testcases := []struct {
-		name     string
-		setup    []dbpkg.Spices
-		expected []dbpkg.Spices
+func TestSelectAll_Success(t *testing.T) {
+	tests := []struct {
+		name        string
+		initialData []db.Spices
+		expected    []db.Spices
 	}{
 		{
-			name: "select user",
-			setup: []dbpkg.Spices{
-				{0, "クミン", "スパイシー", "セリ科"},
+			name: "No error, multiple spices",
+			initialData: []db.Spices{
+				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
+				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
 			},
-			expected: []dbpkg.Spices{{0, "クミン", "スパイシー", "セリ科"}},
+			expected: []db.Spices{
+				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
+				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
+			},
 		},
 	}
 
-	for _, tt := range testcases {
+	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			db := setupTestDB(t, tt.setup)
+			testDB := setupTestDB(t, tt.initialData)
+			defer testDB.Close()
 
-			users, err := dbpkg.SelectAll(db)
-			assert.Nil(t, err)
-			assert.Equal(t, tt.expected, users)
+			actual, err := testDB.SelectAll()
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected, actual)
 		})
 	}
 }

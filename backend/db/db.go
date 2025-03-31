@@ -6,6 +6,15 @@ import (
 	"log"
 )
 
+type DB interface {
+	SelectAll() ([]Spices, error)
+	Close()
+}
+
+type SqliteDB struct {
+	Conn *sql.DB
+}
+
 type Spices struct {
 	Id     int    `json:"id"`
 	Name   string `json:"name"`
@@ -13,16 +22,22 @@ type Spices struct {
 	Family string `json:"family"`
 }
 
-func Open() *sql.DB {
-	db, err := sql.Open("sqlite3", "/data/spices.db")
+func NewSqliteDB(dataSourceName string) DB {
+	conn, err := sql.Open("sqlite3", dataSourceName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return db
+	return &SqliteDB{Conn: conn}
 }
 
-func SelectAll(db *sql.DB) ([]Spices, error) {
-	rows, err := db.Query("SELECT * FROM spices")
+func (db *SqliteDB) Close() {
+	if db.Conn != nil {
+		db.Conn.Close()
+	}
+}
+
+func (db *SqliteDB) SelectAll() ([]Spices, error) {
+	rows, err := db.Conn.Query("SELECT * FROM spices")
 	if err != nil {
 		return nil, err
 	}
