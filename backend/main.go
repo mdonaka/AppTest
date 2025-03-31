@@ -26,7 +26,7 @@ func notfoundHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	database := db.NewSqliteDB("/data/spices.db")
 	defer database.Close()
-	dataHandlerStruct := &api.DataHandlerStruct{DB: database}
+	dataHandlerStruct := &api.HandlerWithDB{DB: database}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", middleware(notfoundHandler))

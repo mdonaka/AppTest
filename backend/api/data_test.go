@@ -49,7 +49,7 @@ func TestDataHandler_Success(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			handler := &api.DataHandlerStruct{DB: tt.mockDB}
+			handler := &api.HandlerWithDB{DB: tt.mockDB}
 			req, err := http.NewRequest("GET", "/data", nil)
 			assert.NoError(t, err)
 
@@ -86,7 +86,7 @@ func TestDataHandler_Failed(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			handler := &api.DataHandlerStruct{DB: tt.mockDB}
+			handler := &api.HandlerWithDB{DB: tt.mockDB}
 			req, err := http.NewRequest("GET", "/data", nil)
 			assert.NoError(t, err)
 

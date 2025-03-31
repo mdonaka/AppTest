@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-type DataHandlerStruct struct {
+type HandlerWithDB struct {
 	DB db.DB
 }
 
-func (handler *DataHandlerStruct) DataHandler(w http.ResponseWriter, r *http.Request) {
+func (handler *HandlerWithDB) DataHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := handler.DB.SelectAll()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
