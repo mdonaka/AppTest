@@ -32,7 +32,7 @@ export function Layout({children}: {children: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        <Header /> {/* ヘッダーを追加 */}
+        <Header />
         <div className="page-content">
           {children}
         </div>
