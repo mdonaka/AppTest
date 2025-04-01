@@ -4,6 +4,7 @@ import {useState, useEffect} from "react";
 const QuizFlame = ({data, editableFields}) => {
   const [index, setIndex] = useState(0);
   const [formData, setFormData] = useState({});
+  const [resultMessage, setResultMessage] = useState("　");  // デフォルトでスペースを用意
 
   useEffect(() => {
     if (data.length > 0) {
@@ -27,11 +28,21 @@ const QuizFlame = ({data, editableFields}) => {
     const queryParams = new URLSearchParams(formData).toString();
     const url = `http://localhost:8080/check?${queryParams}`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       const result = await response.json();
-      console.log(result);
+      if (result.match) {
+        setResultMessage("正解！");
+      } else {
+        setResultMessage("不正解...");
+      }
     } catch (error) {
       console.error('Error:', error);
+      setResultMessage("エラーが発生しました。");
     }
   };
 
@@ -88,8 +99,10 @@ const QuizFlame = ({data, editableFields}) => {
         </div>
 
         <button onClick={nextItem} disabled={index === data.length - 1}>次へ</button>
-        <button type="submit" className="submit-button">Submit</button>
+        <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
       </div>
+
+      <div className="result-message">{resultMessage}</div>
     </div>
   );
 };
