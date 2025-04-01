@@ -103,3 +103,32 @@ func TestSelectByID_Success(t *testing.T) {
 		})
 	}
 }
+
+func TestSelectByID_Fail(t *testing.T) {
+	tests := []struct {
+		name          string
+		initialData   []db.Spices
+		id            int
+		expectedError error
+	}{
+		{
+			name:          "Error, spice not found",
+			initialData:   []db.Spices{},
+			id:            1,
+			expectedError: sql.ErrNoRows,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			testDB := setupTestDB(t, tt.initialData)
+			defer testDB.Close()
+
+			_, err := testDB.SelectByID(tt.id)
+			assert.EqualError(t, err, tt.expectedError.Error(), "Expected error: %v, got: %v", tt.expectedError, err)
+		})
+	}
+}

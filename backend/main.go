@@ -31,6 +31,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", middleware(notfoundHandler))
 	mux.HandleFunc("/data", middleware(dataHandlerStruct.DataHandler))
+	mux.HandleFunc("/check", middleware(dataHandlerStruct.CheckSpiceHandler))
 
 	port := ":8080"
 	fmt.Printf("Server started at %s\n", port)
