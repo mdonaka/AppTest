@@ -33,15 +33,17 @@ export default function Quiz() {
             <h2>Select Quiz Fields</h2>
             <div className="field-selector">
               {Object.keys(data[0] || {}).map((key) => (
-                <label key={key} className="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={editableFields.includes(key)}
-                    onChange={() => handleFieldChange(key)}
-                  />
-                  <span className="checkmark"></span>
-                  {key}
-                </label>
+                (key !== 'id' && key !== 'name') && (
+                  <label key={key} className="custom-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={editableFields.includes(key)}
+                      onChange={() => handleFieldChange(key)}
+                    />
+                    <span className="checkmark"></span>
+                    {key}
+                  </label>
+                )
               ))}
             </div>
           </div>

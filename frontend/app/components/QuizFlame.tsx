@@ -49,6 +49,7 @@ const QuizFlame = ({data, editableFields}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Form Data:", formData);
     const hasEmptyField = Object.values(formData).some(value => value === "");
     if (hasEmptyField) {
       setResultMessage("すべてのフィールドに入力してください");
