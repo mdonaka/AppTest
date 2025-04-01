@@ -1,10 +1,26 @@
 import '../styles/QuizFlame.scss';
 import {useState, useEffect} from "react";
 
+const check = async (queryParams) => {
+  const url = `http://localhost:8080/check?${queryParams}`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
 const QuizFlame = ({data, editableFields}) => {
   const [index, setIndex] = useState(0);
   const [formData, setFormData] = useState({});
-  const [resultMessage, setResultMessage] = useState("　");  // デフォルトでスペースを用意
+  const [resultMessage, setResultMessage] = useState("　");
 
   useEffect(() => {
     if (data.length > 0) {
@@ -25,29 +41,35 @@ const QuizFlame = ({data, editableFields}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const hasEmptyField = Object.values(formData).some(value => value === "");
+    if (hasEmptyField) {
+      setResultMessage("すべてのフィールドに入力してください");
+      return;
+    }
+
     const queryParams = new URLSearchParams(formData).toString();
-    const url = `http://localhost:8080/check?${queryParams}`;
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const result = await response.json();
+      const result = await check(queryParams);
       if (result.match) {
         setResultMessage("正解！");
       } else {
         setResultMessage("不正解...");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setResultMessage("エラーが発生しました。");
+      setResultMessage("エラーが発生しました");
     }
   };
 
-  const prevItem = () => setIndex((i) => Math.max(i - 1, 0));
-  const nextItem = () => setIndex((i) => Math.min(i + 1, data.length - 1));
+  const prevItem = () => {
+    setIndex((i) => Math.max(i - 1, 0));
+    setResultMessage("　");
+  };
+
+  const nextItem = () => {
+    setIndex((i) => Math.min(i + 1, data.length - 1));
+    setResultMessage("　");
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
