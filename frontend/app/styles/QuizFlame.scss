@@ -1,127 +1,86 @@
 .quizflame {
-  background-color: #f1f1f1;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-  ul {
-    display: flex;
-    padding: 0;
-    margin: 0;
-    gap: 16px;
-    flex-wrap: wrap;
+.quizflame form ul {
+  list-style: none;
+  padding: 0;
+}
 
-    li {
-      list-style-type: none;
-      background-color: #ffffff;
-      padding: 16px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 45%;
+.quizflame form ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
 
-      .key {
-        font-weight: bold;
-        color: #333333;
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
+.quizflame form ul li .key {
+  font-weight: bold;
+  width: 30%;
+}
 
-      .value {
-        color: #555555;
-        font-size: 16px;
-        line-height: 1.5;
+.quizflame form ul li .value {
+  width: 70%;
+}
 
-        input {
-          width: 100%;
-          padding: 8px;
-          font-size: 16px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-        }
-      }
-    }
-  }
-
-  .submit-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #0074D9;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.3s, transform 0.3s;
-
-    &:hover {
-      background-color: #0063B1;
-      transform: scale(1.05);
-    }
-
-    &:active {
-      background-color: #00509E;
-      transform: scale(0.95);
-    }
-  }
-
-  .navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 16px;
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 25px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      margin-right: 8px;
-      
-      &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-    }
-
-    .id-selector {
-      display: flex;
-      align-items: center;
-      margin: 0 16px;
-      
-      span {
-        font-size: 16px;
-        font-weight: bold;
-        margin-right: 8px;
-      }
-
-      select {
-        padding: 6px 12px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-        color: #555;
-        cursor: pointer;
-      }
-    }
-  }
+.quizflame form ul li .value input,
+.quizflame form ul li .value select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 .navigation {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.navigation .id-selector {
+  display: flex;
+  align-items: center;
+}
+
+.navigation .id-selector span {
+  margin-right: 10px;
+}
+
+.navigation select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.navigation button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.navigation button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.navigation button:not(:disabled):hover {
+  background-color: #0056b3;
 }
 
 .result-message {
-  margin-top: 1rem;
-  font-size: 1.5rem;
-  color: #333;
+  margin-top: 20px;
+  font-size: 18px;
   text-align: center;
 }

@@ -71,6 +71,10 @@ const QuizFlame = ({data, editableFields}) => {
     setResultMessage("　");
   };
 
+  const getUniqueSortedValues = (key) => {
+    return Array.from(new Set(data.map(item => item[key]))).sort();
+  };
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") prevItem();
@@ -89,13 +93,14 @@ const QuizFlame = ({data, editableFields}) => {
               <div className="key">{key}</div>
               <div className="value">
                 {editableFields.includes(key) ? (
-                  <input
-                    type="text"
-                    id={key}
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                  />
+                  <select id={key} name={key} value={value} onChange={handleChange}>
+                    <option value="">選択してください</option>
+                    {getUniqueSortedValues(key).map((optionValue, idx) => (
+                      <option key={idx} value={optionValue}>
+                        {optionValue}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
                   <span>{value}</span>
                 )}
