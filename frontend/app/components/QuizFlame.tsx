@@ -115,8 +115,8 @@ const QuizFlame = ({data, editableFields}) => {
 
       <div className="navigation">
         <button onClick={prevItem} disabled={index === 0}>前へ</button>
-        <button onClick={nextItem} disabled={index === data.length - 1}>次へ</button>
         <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
+        <button onClick={nextItem} disabled={index === data.length - 1}>次へ</button>
       </div>
 
       <div className="result-message">{resultMessage}</div>
