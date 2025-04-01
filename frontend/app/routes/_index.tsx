@@ -8,11 +8,11 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-
 export default function Index() {
   return (
     <div>
       <Link to="/list">Go to About</Link>
+      <Link to="/quiz">Go to Quiz</Link>
     </div>
-  )
+  );
 }

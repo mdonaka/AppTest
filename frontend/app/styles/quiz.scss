@@ -1,0 +1,73 @@
+.quiz-page {
+  .field-selector-container {
+    text-align: center;
+    margin-bottom: 20px;
+
+    h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .field-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+
+      .custom-checkbox {
+        position: relative;
+        padding-left: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        user-select: none;
+
+        input {
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+          height: 0;
+          width: 0;
+        }
+
+        .checkmark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 20px;
+          width: 20px;
+          background-color: #eee;
+          border-radius: 4px;
+        }
+
+        &:hover input ~ .checkmark {
+          background-color: #ccc;
+        }
+
+        input:checked ~ .checkmark {
+          background-color: #0074D9;
+        }
+
+        .checkmark:after {
+          content: "";
+          position: absolute;
+          display: none;
+        }
+
+        input:checked ~ .checkmark:after {
+          display: block;
+        }
+
+        .checkmark:after {
+          left: 8px;
+          top: 4px;
+          width: 4px;
+          height: 8px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,3 @@
-import TableFlame from '../components/TableFlame';
 import ListFlame from '../components/ListFlame';
 import {useState, useEffect} from 'react';
 
@@ -24,7 +23,6 @@ function ShowTable() {
   }
   return (
     <div>
-      <TableFlame data={data} />
       <ListFlame data={data} />
     </div>
   )
