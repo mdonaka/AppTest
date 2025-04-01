@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import type {LinksFunction} from "@remix-run/node";
-
+import Header from "./components/Header";
 import "./tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -32,7 +32,10 @@ export function Layout({children}: {children: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        {children}
+        <Header /> {/* ヘッダーを追加 */}
+        <div className="page-content">
+          {children}
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>
