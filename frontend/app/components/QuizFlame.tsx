@@ -34,6 +34,18 @@ const QuizFlame = ({data, editableFields}) => {
     }
   }, [data, index, editableFields]);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      const initialFormData = {...data[index]};
+      editableFields.forEach(field => {
+        if (initialFormData[field] !== undefined) {
+          initialFormData[field] = data[0][field] || "";
+        }
+      });
+      setFormData(initialFormData);
+    }
+  }, [data, index, editableFields]);
+
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormData({...formData, [name]: value});
@@ -49,7 +61,6 @@ const QuizFlame = ({data, editableFields}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Form Data:", formData);
     const hasEmptyField = Object.values(formData).some(value => value === "");
     if (hasEmptyField) {
       setResultMessage("すべてのフィールドに入力してください");
