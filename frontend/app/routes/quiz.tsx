@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import QuizFlame from '../components/QuizFlame';
-import '../styles/quiz.scss';
+import '../styles/Quiz.scss';
 
 export default function Quiz() {
   const [data, setData] = useState([]);
