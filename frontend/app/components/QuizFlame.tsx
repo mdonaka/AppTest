@@ -37,6 +37,13 @@ const QuizFlame = ({data, editableFields}) => {
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormData({...formData, [name]: value});
+
+    if (name === 'name') {
+      const newIndex = data.findIndex(item => item.name === value);
+      if (newIndex !== -1) {
+        setIndex(newIndex);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -71,10 +78,6 @@ const QuizFlame = ({data, editableFields}) => {
     setResultMessage("　");
   };
 
-  const getUniqueSortedValues = (key) => {
-    return Array.from(new Set(data.map(item => item[key]))).sort();
-  };
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") prevItem();
@@ -89,42 +92,29 @@ const QuizFlame = ({data, editableFields}) => {
       <form onSubmit={handleSubmit}>
         <ul>
           {Object.entries(formData).map(([key, value]) => (
-            <li key={key}>
-              <div className="key">{key}</div>
-              <div className="value">
-                {editableFields.includes(key) ? (
-                  <select id={key} name={key} value={value} onChange={handleChange}>
-                    <option value="">選択してください</option>
-                    {getUniqueSortedValues(key).map((optionValue, idx) => (
-                      <option key={idx} value={optionValue}>
-                        {optionValue}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <span>{value}</span>
-                )}
-              </div>
-            </li>
-          ))}
+            key !== 'id' && (
+              <li key={key}>
+                <div className="key">{key}</div>
+                <div className="value">
+                  {editableFields.includes(key) || key === 'name' ? (
+                    <select id={key} name={key} value={value} onChange={handleChange}>
+                      {Array.from(new Set(data.map(item => item[key]))).sort().map((optionValue, idx) => (
+                        <option key={idx} value={optionValue}>
+                          {optionValue}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span>{value}</span>
+                  )}
+                </div>
+              </li>
+            )))}
         </ul>
       </form>
 
       <div className="navigation">
         <button onClick={prevItem} disabled={index === 0}>前へ</button>
-
-        <div className="id-selector">
-          <span>IDの値:</span>
-          <select
-            value={index}
-            onChange={(e) => setIndex(parseInt(e.target.value, 10))}
-          >
-            {data.map((_, i) => (
-              <option key={i} value={i}>{i + 1}</option>
-            ))}
-          </select>
-        </div>
-
         <button onClick={nextItem} disabled={index === data.length - 1}>次へ</button>
         <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
       </div>
