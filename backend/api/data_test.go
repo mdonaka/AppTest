@@ -19,6 +19,18 @@ func (m *MockDB) SelectAll() ([]db.Spices, error) {
 	return m.data, m.err
 }
 
+func (m *MockDB) SelectByID(id int) (*db.Spices, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	for _, spice := range m.data {
+		if spice.Id == id {
+			return &spice, nil
+		}
+	}
+	return nil, nil
+}
+
 func (m *MockDB) Close() {}
 
 func TestDataHandler_Success(t *testing.T) {

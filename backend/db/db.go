@@ -8,6 +8,7 @@ import (
 
 type DB interface {
 	SelectAll() ([]Spices, error)
+	SelectByID(id int) (*Spices, error)
 	Close()
 }
 
@@ -59,4 +60,14 @@ func (db *SqliteDB) SelectAll() ([]Spices, error) {
 		return nil, err
 	}
 	return spices, nil
+}
+
+func (db *SqliteDB) SelectByID(id int) (*Spices, error) {
+	row := db.Conn.QueryRow("SELECT id, name, flavor, family FROM spices WHERE id = ?", id)
+
+	var spice Spices
+	if err := row.Scan(&spice.Id, &spice.Name, &spice.Flavor, &spice.Family); err != nil {
+		return nil, err
+	}
+	return &spice, nil
 }

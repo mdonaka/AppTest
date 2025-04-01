@@ -70,3 +70,36 @@ func TestSelectAll_Success(t *testing.T) {
 		})
 	}
 }
+
+func TestSelectByID_Success(t *testing.T) {
+	tests := []struct {
+		name        string
+		initialData []db.Spices
+		id          int
+		expected    *db.Spices
+	}{
+		{
+			name: "No error, single spice",
+			initialData: []db.Spices{
+				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
+				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
+			},
+			id:       1,
+			expected: &db.Spices{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			testDB := setupTestDB(t, tt.initialData)
+			defer testDB.Close()
+
+			actual, err := testDB.SelectByID(tt.id)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
