@@ -22,6 +22,11 @@
   border-bottom: 1px solid #ddd;
 }
 
+.tableRow > *:first-child {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
 .loading {
   text-align: center;
   padding: 20px;

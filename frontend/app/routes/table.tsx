@@ -44,7 +44,7 @@ const Table = () => {
     return <div className="noData">データがありません</div>;
   }
 
-  const columns = Object.keys(data[0]);
+  const columns = Object.keys(data[0]).filter(column => column !== 'id');
 
   const filteredData = data.filter(item => {
     return columns.every(column => {
