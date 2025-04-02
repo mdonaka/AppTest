@@ -27,9 +27,12 @@ func (handler *HandlerWithDB) DataHandler(w http.ResponseWriter, r *http.Request
 func (handler *HandlerWithDB) CheckSpiceHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 	name := r.URL.Query().Get("name")
+	alias := r.URL.Query().Get("alias")
+	taste := r.URL.Query().Get("taste")
 	flavor := r.URL.Query().Get("flavor")
 	family := r.URL.Query().Get("family")
-	if idStr == "" || name == "" || flavor == "" || family == "" {
+	origin := r.URL.Query().Get("origin")
+	if idStr == "" || name == "" || alias == "" || taste == "" || flavor == "" || family == "" || origin == "" {
 		http.Error(w, "Missing one or more parameters", http.StatusBadRequest)
 		return
 	}

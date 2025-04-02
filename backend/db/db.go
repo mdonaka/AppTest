@@ -19,8 +19,11 @@ type SqliteDB struct {
 type Spices struct {
 	Id     int    `json:"id"`
 	Name   string `json:"name"`
+	Alias  string `json:"alias"`
+	Taste  string `json:"taste"`
 	Flavor string `json:"flavor"`
 	Family string `json:"family"`
+	Origin string `json:"origin"`
 }
 
 func NewSqliteDB(dataSourceName string) DB {
@@ -48,7 +51,7 @@ func (db *SqliteDB) SelectAll() ([]Spices, error) {
 	for rows.Next() {
 		var spice Spices
 
-		err := rows.Scan(&spice.Id, &spice.Name, &spice.Flavor, &spice.Family)
+		err := rows.Scan(&spice.Id, &spice.Name, &spice.Alias, &spice.Taste, &spice.Flavor, &spice.Family, &spice.Origin)
 		if err != nil {
 			return nil, err
 		}
@@ -63,10 +66,10 @@ func (db *SqliteDB) SelectAll() ([]Spices, error) {
 }
 
 func (db *SqliteDB) SelectByID(id int) (*Spices, error) {
-	row := db.Conn.QueryRow("SELECT id, name, flavor, family FROM spices WHERE id = ?", id)
+	row := db.Conn.QueryRow("SELECT id, name, alias, taste, flavor, family, origin FROM spices WHERE id = ?", id)
 
 	var spice Spices
-	if err := row.Scan(&spice.Id, &spice.Name, &spice.Flavor, &spice.Family); err != nil {
+	if err := row.Scan(&spice.Id, &spice.Name, &spice.Alias, &spice.Taste, &spice.Flavor, &spice.Family, &spice.Origin); err != nil {
 		return nil, err
 	}
 	return &spice, nil

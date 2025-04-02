@@ -19,17 +19,20 @@ func setupTestDB(t *testing.T, initialData []db.Spices) db.DB {
 	CREATE TABLE spices (
 		id INTEGER PRIMARY KEY,
 		name TEXT,
+    alias TEXT,
+    taste TEXT,
 		flavor TEXT,
-		family TEXT
+		family TEXT,
+    origin TEXT
 	);
 	`
 	if _, err := conn.Exec(createTable); err != nil {
 		t.Fatalf("Failed to create table: %v", err)
 	}
 
-	insertStmt := `INSERT INTO spices (id, name, flavor, family) VALUES (?, ?, ?, ?);`
+	insertStmt := `INSERT INTO spices (id, name, alias, taste, flavor, family, origin) VALUES (?, ?, ?, ?, ?, ?, ?)`
 	for _, spice := range initialData {
-		if _, err := conn.Exec(insertStmt, spice.Id, spice.Name, spice.Flavor, spice.Family); err != nil {
+		if _, err := conn.Exec(insertStmt, spice.Id, spice.Name, spice.Alias, spice.Taste, spice.Flavor, spice.Family, spice.Origin); err != nil {
 			t.Fatalf("Failed to insert initial data: %v", err)
 		}
 	}
@@ -46,12 +49,12 @@ func TestSelectAll_Success(t *testing.T) {
 		{
 			name: "No error, multiple spices",
 			initialData: []db.Spices{
-				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
-				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
+				{Id: 1, Name: "クミン", Alias: "クミン", Taste: "辛味", Flavor: "辛味", Family: "セリ科", Origin: "インド"},
+				{Id: 2, Name: "コリアンダー", Alias: "コリアンダー", Taste: "甘味", Flavor: "柑橘系", Family: "セリ科", Origin: "インド"},
 			},
 			expected: []db.Spices{
-				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
-				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
+				{Id: 1, Name: "クミン", Alias: "クミン", Taste: "辛味", Flavor: "辛味", Family: "セリ科", Origin: "インド"},
+				{Id: 2, Name: "コリアンダー", Alias: "コリアンダー", Taste: "甘味", Flavor: "柑橘系", Family: "セリ科", Origin: "インド"},
 			},
 		},
 	}
@@ -81,11 +84,11 @@ func TestSelectByID_Success(t *testing.T) {
 		{
 			name: "No error, single spice",
 			initialData: []db.Spices{
-				{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
-				{Id: 2, Name: "コリアンダー", Flavor: "柑橘系", Family: "セリ科"},
+				{Id: 1, Name: "クミン", Alias: "クミン", Taste: "辛味", Flavor: "辛味", Family: "セリ科", Origin: "インド"},
+				{Id: 2, Name: "コリアンダー", Alias: "コリアンダー", Taste: "甘味", Flavor: "柑橘系", Family: "セリ科", Origin: "インド"},
 			},
 			id:       1,
-			expected: &db.Spices{Id: 1, Name: "クミン", Flavor: "辛味", Family: "セリ科"},
+			expected: &db.Spices{Id: 1, Name: "クミン", Alias: "クミン", Taste: "辛味", Flavor: "辛味", Family: "セリ科", Origin: "インド"},
 		},
 	}
 
