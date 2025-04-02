@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import '../styles/Table.scss';
 
 interface DataType {
@@ -48,12 +48,6 @@ const Table = () => {
 
   const filteredData = data.filter(item => {
     return columns.every(column => {
-      if (!isFilterExpanded) {
-        return true;
-      }
-      if (!expandedKeys.includes(column)) {
-        return true;
-      }
       if (!filters[column] || filters[column].length === 0) {
         return true;
       }
@@ -70,6 +64,7 @@ const Table = () => {
       }
     });
   };
+
   const getFilterOptionsHeight = (column: string) => {
     const numberOfOptions = [...new Set(data.map(item => item[column]))].length;
     const optionHeight = 35;
@@ -94,37 +89,34 @@ const Table = () => {
                 <label onClick={() => handleKeyClick(column)} className="filterKey">
                   {column}
                 </label>
-                {[...new Set(data.map(item => column))].length > 0 && (
-                  <div>
-                    {[...new Set(data.map(item => item[column]))].map(value => (
-                      <label key={value} className="filterOptionLabel">
-                        <input
-                          type="checkbox"
-                          value={value}
-                          checked={filters[column]?.includes(value) || false}
-                          onChange={e => {
-                            const checked = e.target.checked;
-                            setFilters(prevFilters => {
-                              const columnFilters = prevFilters[column] || [];
-                              if (checked) {
+                {
+                  [...new Set(data.map(item => column))].length > 0 && expandedKeys.includes(column) && (
+                    <div>
+                      {[...new Set(data.map(item => item[column]))].map(value => (
+                        <label key={value} className="filterOptionLabel">
+                          <input
+                            type="checkbox"
+                            value={value}
+                            checked={filters[column]?.includes(value) || false}
+                            onChange={e => {
+                              const checked = !filters[column]?.includes(value);
+                              setFilters(prevFilters => {
+                                const columnFilters = prevFilters[column] || [];
                                 return {
                                   ...prevFilters,
-                                  [column]: [...columnFilters, value],
+                                  [column]: checked
+                                    ? [...columnFilters, value]
+                                    : columnFilters.filter(v => v !== value),
                                 };
-                              } else {
-                                return {
-                                  ...prevFilters,
-                                  [column]: columnFilters.filter(v => v !== value),
-                                };
-                              }
-                            });
-                          }}
-                        />
-                        {value}
-                      </label>
-                    ))}
-                  </div>
-                )}
+                              });
+                            }}
+                          />
+                          {value}
+                        </label>
+                      ))}
+                    </div>
+                  )
+                }
               </div>
             );
           })}
