@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import '../styles/Table.scss';
 
 interface DataType {
@@ -9,6 +9,9 @@ const Table = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<{[key: string]: string[]}>({});
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,30 +41,114 @@ const Table = () => {
   }
 
   if (!data || data.length === 0) {
-    return <div className="noData">No data available.</div>;
+    return <div className="noData">データがありません</div>;
   }
 
   const columns = Object.keys(data[0]);
 
+  const filteredData = data.filter(item => {
+    return columns.every(column => {
+      if (!isFilterExpanded) {
+        return true;
+      }
+      if (!expandedKeys.includes(column)) {
+        return true;
+      }
+      if (!filters[column] || filters[column].length === 0) {
+        return true;
+      }
+      return filters[column].includes(item[column]);
+    });
+  });
+
+  const handleKeyClick = (column: string) => {
+    setExpandedKeys(prevExpandedKeys => {
+      if (prevExpandedKeys.includes(column)) {
+        return prevExpandedKeys.filter(key => key !== column);
+      } else {
+        return [...prevExpandedKeys, column];
+      }
+    });
+  };
+  const getFilterOptionsHeight = (column: string) => {
+    const numberOfOptions = [...new Set(data.map(item => item[column]))].length;
+    const optionHeight = 35;
+    const baseHeight = 38;
+    return expandedKeys.includes(column) ? `${baseHeight + (numberOfOptions * optionHeight)}px` : `${baseHeight}px`;
+  }
+
   return (
-    <table className="tableContainer">
-      <thead>
-        <tr>
-          {columns.map(column => (
-            <th key={column} className="tableHeader">{column}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row, index) => (
-          <tr key={index} className="tableRow">
+    <div className="filterContainer">
+      <label onClick={() => setIsFilterExpanded(!isFilterExpanded)} className="filterHeader">
+        フィルタ
+      </label>
+      {isFilterExpanded && (
+        <div className="filterOptions">
+          {columns.map(column => {
+            return (
+              <div
+                key={column}
+                className="filterKeyContainer"
+                style={{maxHeight: getFilterOptionsHeight(column)}}
+              >
+                <label onClick={() => handleKeyClick(column)} className="filterKey">
+                  {column}
+                </label>
+                {[...new Set(data.map(item => column))].length > 0 && (
+                  <div>
+                    {[...new Set(data.map(item => item[column]))].map(value => (
+                      <label key={value} className="filterOptionLabel">
+                        <input
+                          type="checkbox"
+                          value={value}
+                          checked={filters[column]?.includes(value) || false}
+                          onChange={e => {
+                            const checked = e.target.checked;
+                            setFilters(prevFilters => {
+                              const columnFilters = prevFilters[column] || [];
+                              if (checked) {
+                                return {
+                                  ...prevFilters,
+                                  [column]: [...columnFilters, value],
+                                };
+                              } else {
+                                return {
+                                  ...prevFilters,
+                                  [column]: columnFilters.filter(v => v !== value),
+                                };
+                              }
+                            });
+                          }}
+                        />
+                        {value}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <table className="tableContainer">
+        <thead>
+          <tr>
             {columns.map(column => (
-              <td key={`${index}-${column}`} className="tableCell">{row[column]?.toString()}</td>
+              <th key={column} className="tableHeader">{column}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {filteredData.map((row, index) => (
+            <tr key={index} className="tableRow">
+              {columns.map(column => (
+                <td key={`${index}-${column}`} className="tableCell">{row[column]?.toString()}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
