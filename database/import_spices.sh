@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB_NAME="/data/spices.db"
+DB_NAME="${1:-/data/spices.db}"
 CSV_FILE="spices.csv"
 TABLE_NAME="spices"
 TEMP_TABLE="tmp"

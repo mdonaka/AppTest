@@ -1,5 +1,5 @@
 services:
-  frontend:
+  frontend_dev:
     container_name: frontend
     build:
       context: ./frontend
@@ -13,8 +13,9 @@ services:
       - "3000:3000"
     tty: true
     working_dir: /frontend
+    profiles: ["dev"]
 
-  backend:
+  backend_dev:
     container_name: backend
     build: 
       context: ./backend
@@ -28,11 +29,12 @@ services:
         target: /backend
       - type: volume
         target: /data
-        source: data
+        source: data_dev
     tty: true
     working_dir: /backend
+    profiles: ["dev"]
 
-  database:
+  database_dev:
     container_name: database
     build:
       context: ./database
@@ -44,10 +46,50 @@ services:
         target: /database
       - type: volume
         target: /data
-        source: data
+        source: data_dev
     tty: true
     working_dir: /database
+    profiles: ["dev"]
+
+  frontend_prod:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "3000:3000"
+    profiles: ["prod"]
+    tty: true
+
+  backend_prod:
+    container_name: backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: volume
+        target: /data
+        source: data_prod
+    profiles: ["prod"]
+
+  database_prod:
+    container_name: database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      target: prod
+    volumes:
+      - type: volume
+        target: /data
+        source: data_prod
+    profiles: ["prod"]
 
 volumes:
-  data:
+  data_dev:
+    driver: local
+  data_prod:
     driver: local
